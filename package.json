@@ -1,0 +1,17 @@
+{
+  "name": "language-x",
+  "version": "0.8.0",
+  "description": "X language support in Atom",
+  "engines": {
+    "atom": "*"
+  },
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dakshika/language-x.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dakshika/language-x/issues"
+  },
+  "license": "Apache 2.0"
+}
