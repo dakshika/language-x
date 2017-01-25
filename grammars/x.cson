@@ -92,7 +92,7 @@
     'annotations':
         'patterns': [
             {
-                'begin': '(@[^ (]+)(\\()'
+                'begin': '(@[^ (]+)(\\s*\\()'
                 'beginCaptures':
                     '1':
                         'name': 'storage.type.annotation.x'
@@ -111,6 +111,9 @@
                                 '2':
                                     'name': 'keyword.operator.assignment.x'
                             'match': '(\\w*)\\s*(=)'
+                        }
+                        {
+                            'include': '#code'
                         }
                         {
                             'match': ','
@@ -151,6 +154,29 @@
                 ]
             }
         ]
+    'method-call':
+      'begin': '(\\.)\\s*([A-Za-z_$][\\w$]*)\\s*(\\()'
+      'beginCaptures':
+        '1':
+          'name': 'punctuation.separator.period.java'
+        '2':
+          'name': 'entity.name.function.java'
+        '3':
+          'name': 'punctuation.definition.parameters.begin.bracket.round.java'
+      'end': '\\)'
+      'endCaptures':
+        '0':
+          'name': 'punctuation.definition.parameters.end.bracket.round.java'
+      'name': 'meta.method-call.java'
+      'patterns': [
+        {
+          'match': ','
+          'name': 'punctuation.separator.delimiter.java'
+        }
+        {
+          'include': '#code'
+        }
+      ]
     'functions':
         'begin': '(?!new)(?=[\\w<].*\\s+)(?=([^=/]|/(?!/))+\\()'
         'end': '(})|(?=;)'
@@ -231,7 +257,7 @@
         'end': '(?=;|\\))'
         'patterns': [
             {
-                'include': '#function-call'
+                'include': '#method-call'
             }
             {
                 'include': '#all-types'
@@ -285,6 +311,9 @@
             }
             {
                 'include': '#static-initializer'
+            }
+            {
+              'include': '#annotations'
             }
             {
                 'include': '#resource'
@@ -510,9 +539,6 @@
     'parameters':
         'patterns': [
             {
-                'include': '#annotations'
-            }
-            {
                 'include': '#all-types'
             }
             {
@@ -545,13 +571,84 @@
           'name': 'constant.numeric.x'
         }
       ]
+    'try-catch':
+        'patterns': [
+          {
+            'begin': '\\btry\\b'
+            'beginCaptures':
+              '0':
+                'name': 'keyword.control.try.x'
+            'end': '}'
+            'endCaptures':
+              '0':
+                'name': 'punctuation.section.try.end.bracket.curly.x'
+            'name': 'meta.try.x'
+            'patterns': [
+              {
+                'begin': '{'
+                'beginCaptures':
+                  '0':
+                    'name': 'punctuation.section.try.begin.bracket.curly.x'
+                'end': '(?=})'
+                'contentName': 'meta.try.body.x'
+                'patterns': [
+                  {
+                    'include': '#code'
+                  }
+                ]
+              }
+            ]
+          }
+          {
+            'begin': '\\b(catch)\\b\\s*(?=\\(\\s*[^\\s]+\\s*[^)]+\\))'
+            'beginCaptures':
+              '1':
+                'name': 'keyword.control.catch.x'
+            'end': '}'
+            'endCaptures':
+              '0':
+                'name': 'punctuation.section.catch.end.bracket.curly.x'
+            'name': 'meta.catch.x'
+            'patterns': [
+              {
+                'begin': '\\('
+                'beginCaptures':
+                  '0':
+                    'name': 'punctuation.definition.parameters.begin.bracket.round.x'
+                'end': '\\)'
+                'endCaptures':
+                  '0':
+                    'name': 'punctuation.definition.parameters.end.bracket.round.x'
+                'contentName': 'meta.catch.parameters.x'
+                'patterns': [
+                  {
+                    'include': '#parameters'
+                  }
+                ]
+              }
+              {
+                'begin': '{'
+                'beginCaptures':
+                  '0':
+                    'name': 'punctuation.section.catch.begin.bracket.curly.x'
+                'end': '(?=})'
+                'contentName': 'meta.catch.body.x'
+                'patterns': [
+                  {
+                    'include': '#code'
+                  }
+                ]
+              }
+            ]
+          }
+        ]#end of try-catch
     'code':
         'patterns': [
             {
-                'include':'#annotations'
+              'include': '#annotations'
             }
             {
-                'include':'#functions'
+              'include':'#functions'
             }
             {
                 'include':'#comments'
@@ -570,6 +667,9 @@
             }
             {
                 'include': '#keywords'
+            }
+            {
+                'include': '#method-call'
             }
             {
                 'include': '#strings'
